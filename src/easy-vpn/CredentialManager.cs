@@ -46,6 +46,9 @@ namespace EasyVpn
             var creds = Encoding.UTF8.GetString(resultBytes);
 
             var index = creds.IndexOf(':');
+            if (index < 0)
+                return Credentials.Empty();
+
             var username = creds.Substring(0, index);
             var password = creds.Substring(index + 1);
 

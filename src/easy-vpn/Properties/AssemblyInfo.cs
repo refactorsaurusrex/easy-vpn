@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("easy-vpn")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Cylance")]
+[assembly: AssemblyCompany("Nick Spreitzer")]
 [assembly: AssemblyProduct("easy-vpn")]
-[assembly: AssemblyCopyright("Copyright © Cylance 2017")]
+[assembly: AssemblyCopyright("Copyright © Nick Spreitzer 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
