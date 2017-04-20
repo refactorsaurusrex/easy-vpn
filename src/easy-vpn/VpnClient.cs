@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FluentConsole.Library;
+using static System.ConsoleColor;
 
 namespace EasyVpn
 {
@@ -12,13 +13,25 @@ namespace EasyVpn
     {
         public void Login(Credentials creds)
         {
-            Process.Start(@"C:\Program Files\Palo Alto Networks\GlobalProtect\PanGPA.exe");
-            Task.Delay(3000).Wait();
+            const int maxTries = 5;
+            var counter = 1;
+            IntPtr mainWindowHandle;
 
-            var mainWindowHandle = Process.GetProcessesByName("PanGPA")[0].MainWindowHandle;
+            while (true)
+            {
+                Process.Start(@"C:\Program Files\Palo Alto Networks\GlobalProtect\PanGPA.exe");
+                Task.Delay(2000).Wait();
 
-            if (mainWindowHandle == IntPtr.Zero)
-                throw new InvalidOperationException("VPN client does not appear to be running. Please start the VPN client and try again.");
+                mainWindowHandle = Process.GetProcessesByName("PanGPA")[0].MainWindowHandle;
+
+                if (mainWindowHandle != IntPtr.Zero)
+                    break;
+
+                if (counter++ >= maxTries)
+                    throw new InvalidOperationException("Unable to start the VPN client. :( You may have to do it manually this time.");
+
+                $"Couldn't get the VPN client's main window handle. Will try {maxTries - counter} more times...".WriteLine(Red);
+            }
 
             var tabControl = ExternalWindow.FindControl(mainWindowHandle, IntPtr.Zero, "SysTabControl32");
             var dialog1 = ExternalWindow.FindControl(tabControl, IntPtr.Zero);
@@ -32,6 +45,7 @@ namespace EasyVpn
             ExternalWindow.SetText(passwordField, creds.Password);
 
             ExternalWindow.Click(connectButton);
+            "VPN connection initiated!".WriteLine(Cyan);
             Task.Delay(3000).Wait();
             ExternalWindow.Close(mainWindowHandle);
         }
