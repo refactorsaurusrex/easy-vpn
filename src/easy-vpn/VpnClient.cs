@@ -22,7 +22,7 @@ namespace EasyVpn
             while (mainWindowHandle == IntPtr.Zero)
             {
                 Process.Start(@"C:\Program Files\Palo Alto Networks\GlobalProtect\PanGPA.exe");
-                Task.Delay(3000).Wait();
+                Task.Delay(5000).Wait();
 
                 mainWindowHandle = Process.GetProcessesByName("PanGPA").FirstOrDefault()?.MainWindowHandle ?? IntPtr.Zero;
 
@@ -48,7 +48,7 @@ namespace EasyVpn
 
             ExternalWindow.Click(connectButton);
             "VPN connection initiated!".WriteLine(Cyan);
-            Task.Delay(3000).Wait();
+            Task.Delay(5000).Wait();
             ExternalWindow.Close(mainWindowHandle);
         }
     }
