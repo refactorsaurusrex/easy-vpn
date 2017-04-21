@@ -15,14 +15,16 @@ namespace EasyVpn
         {
             const int maxTries = 5;
             var counter = 1;
-            IntPtr mainWindowHandle;
 
-            while (true)
+            var vpnProcess = Process.GetProcessesByName("PanGPA").FirstOrDefault();
+            var mainWindowHandle = vpnProcess?.MainWindowHandle ?? IntPtr.Zero;
+
+            while (mainWindowHandle == IntPtr.Zero)
             {
                 Process.Start(@"C:\Program Files\Palo Alto Networks\GlobalProtect\PanGPA.exe");
-                Task.Delay(2000).Wait();
+                Task.Delay(3000).Wait();
 
-                mainWindowHandle = Process.GetProcessesByName("PanGPA")[0].MainWindowHandle;
+                mainWindowHandle = Process.GetProcessesByName("PanGPA").FirstOrDefault()?.MainWindowHandle ?? IntPtr.Zero;
 
                 if (mainWindowHandle != IntPtr.Zero)
                     break;
