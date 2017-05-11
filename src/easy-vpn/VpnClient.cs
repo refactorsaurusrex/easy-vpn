@@ -13,26 +13,23 @@ namespace EasyVpn
     {
         public void Login(Credentials creds)
         {
-            const int maxTries = 5;
-            var counter = 1;
-
             var vpnProcess = Process.GetProcessesByName("PanGPA").FirstOrDefault();
             var mainWindowHandle = vpnProcess?.MainWindowHandle ?? IntPtr.Zero;
+            "Trying to connect...".WriteLine(Cyan);
 
-            while (mainWindowHandle == IntPtr.Zero)
+            if (mainWindowHandle == IntPtr.Zero)
             {
-                Process.Start(@"C:\Program Files\Palo Alto Networks\GlobalProtect\PanGPA.exe");
-                Task.Delay(5000).Wait();
+                vpnProcess = Process.Start(@"C:\Program Files\Palo Alto Networks\GlobalProtect\PanGPA.exe");
+                var starupResult = vpnProcess?.WaitForInputIdle(15000);
 
-                mainWindowHandle = Process.GetProcessesByName("PanGPA").FirstOrDefault()?.MainWindowHandle ?? IntPtr.Zero;
+                if (starupResult.HasValue && starupResult.Value)
+                {
+                    vpnProcess.Refresh();
+                    mainWindowHandle = vpnProcess.MainWindowHandle;
+                }
 
                 if (mainWindowHandle != IntPtr.Zero)
-                    break;
-
-                if (counter++ >= maxTries)
                     throw new InvalidOperationException("Unable to start the VPN client. :( You may have to do it manually this time.");
-
-                $"Couldn't get the VPN client's main window handle. Will try {maxTries - counter} more times...".WriteLine(Red);
             }
 
             var tabControl = ExternalWindow.FindControl(mainWindowHandle, IntPtr.Zero, "SysTabControl32");
