@@ -15,22 +15,9 @@ namespace EasyVpn
         {
             var vpnProcess = Process.GetProcessesByName("PanGPA").FirstOrDefault();
             var mainWindowHandle = vpnProcess?.MainWindowHandle ?? IntPtr.Zero;
-            "Trying to connect...".WriteLine(Cyan);
 
             if (mainWindowHandle == IntPtr.Zero)
-            {
-                vpnProcess = Process.Start(@"C:\Program Files\Palo Alto Networks\GlobalProtect\PanGPA.exe");
-                var starupResult = vpnProcess?.WaitForInputIdle(15000);
-
-                if (starupResult.HasValue && starupResult.Value)
-                {
-                    vpnProcess.Refresh();
-                    mainWindowHandle = vpnProcess.MainWindowHandle;
-                }
-
-                if (mainWindowHandle != IntPtr.Zero)
-                    throw new InvalidOperationException("Unable to start the VPN client. :( You may have to do it manually this time.");
-            }
+                throw new InvalidOperationException(Resources.CantFindClientWindowException);
 
             var tabControl = ExternalWindow.FindControl(mainWindowHandle, IntPtr.Zero, "SysTabControl32");
             var dialog1 = ExternalWindow.FindControl(tabControl, IntPtr.Zero);
@@ -45,7 +32,7 @@ namespace EasyVpn
 
             ExternalWindow.Click(connectButton);
             "VPN connection initiated!".WriteLine(Cyan);
-            Task.Delay(5000).Wait();
+            Task.Delay(2000).Wait();
             ExternalWindow.Close(mainWindowHandle);
         }
     }
