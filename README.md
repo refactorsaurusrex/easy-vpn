@@ -1,3 +1,6 @@
+# UPDATE 9/30/18
+The latest version of the GlobalProtect VPN client has rendered this project moot because the popup window only remains visible while it has focus. As soon as you bring another window into the foreground, the GlobalProtect VPN window disappears. It was good while it lasted, but I guess I have to suck it up now and type in my credentials manually.
+
 # What's easy-vpn?
 
 `easy-vpn` is a command line tool that automates entering your credentials into the GlobalProtect VPN client. If you don't use GlobalProtect VPN, this library isn't going to do a whole lot for ya. :)
